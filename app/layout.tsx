@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Vazirmatn } from "next/font/google";
+import Link from "next/link";
+import { ChartColumnBigIcon } from "lucide-react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const vazir = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-vazir",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -19,11 +18,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${vazir.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        <nav className="bg-primary p-4 text-white h-20 flex items-center justify-between">
+          <Link
+            href={"/"}
+            className="font-black text-2xl flex items-center gap-1"
+          >
+            <ChartColumnBigIcon className="text-lime-500" /> صورتحساب
+          </Link>
+          <div>دکمهای ثبتنام و ورود</div>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }
