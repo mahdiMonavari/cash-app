@@ -19,6 +19,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { FieldSet } from "../ui/field";
+import "@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css";
+import "@majidh1/jalalidatepicker";
+import { useEffect } from "react";
+import DatePickerField from "./DatePicker";
 
 const transactionTypeEnum = {
   income: "درآمد",
@@ -36,19 +40,21 @@ const transactionFormSchema = z.object({
   transaction: z.enum(transactionTypeEnumKeys, {
     message: "لطفاً نوع تراکنش را مشخص کنید",
   }),
-  categoryId: z.coerce.number().positive("لطفا یک دسته بندی را انتخاب کنید"),
-  transactionDate: z.coerce.date().max(addDays(new Date(), 1), ""),
-  amount: z.coerce.number().positive("مقدار باید بزرگ تر از 0 باشد"),
+  categoryId: z.number().positive("لطفا یک دسته بندی را انتخاب کنید"),
+  transactionDate: z
+    .date()
+    .max(addDays(new Date(), 1), "حد اکثر روز مجاز امروز است"),
+  amount: z.number().positive("مقدار باید بزرگ تر از 0 باشد"),
   description: z
     .string()
     .min(10, "حداقل توضیحات باید ده کارکتر")
     .max(300, "توضیحات بیش از اندازه میباشد"),
 });
 
-type TransactionForm = z.infer<typeof transactionFormSchema>;
+export type TransactionFormType = z.infer<typeof transactionFormSchema>;
 
 function TransactionForm() {
-  const method = useForm({
+  const method = useForm<TransactionFormType>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       amount: 0,
@@ -58,10 +64,10 @@ function TransactionForm() {
       transactionDate: new Date(),
     },
   });
-  const { register, control, handleSubmit, watch } = method;
-  const submitHandler = (data: TransactionForm) => {};
-  // console.log(watch());
 
+  const { register, control, handleSubmit, watch } = method;
+  const submitHandler = (data: TransactionFormType) => {};
+  console.log(watch());
   return (
     <Form {...method}>
       <form
@@ -144,6 +150,21 @@ function TransactionForm() {
                       ))} */}
                     </SelectContent>
                   </Select>
+                </FormControl>
+                <FormMessage className="text-xs text-destructive" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="transactionDate"
+            render={({ field }) => (
+              <FormItem className="space-y-2 text-right" dir="rtl">
+                <FormLabel className="text-sm font-medium text-muted-foreground">
+                  تاریخ تراکنش
+                </FormLabel>
+                <FormControl>
+                  <DatePickerField field={field} />
                 </FormControl>
                 <FormMessage className="text-xs text-destructive" />
               </FormItem>
