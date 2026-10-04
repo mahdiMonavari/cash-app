@@ -57,8 +57,6 @@ export default function DatePickerField({
         data-jdp-only-date
         data-jdp-max-date="today"
         placeholder="لطفا یک تاریخ وارد نمایید"
-        value={field.value.toLocaleDateString("fa-IR")}
-        onChange={() => {}}
       />
     </div>
   );
