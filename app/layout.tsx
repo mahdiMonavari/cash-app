@@ -11,6 +11,7 @@ import {
 } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
+import UserDropDown from "@/components/manual/UserDropDown";
 
 const vazir = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -83,7 +84,6 @@ export default async function RootLayout({
 }) {
   const authUser = await auth();
   const { userId } = authUser;
-  console.log(authUser);
 
   return (
     <ClerkProvider
@@ -122,16 +122,7 @@ export default async function RootLayout({
 
             <div className="flex items-center gap-3">
               {userId ? (
-                <Button className="p-5 bg-neutral-200 hover:bg-neutral-500">
-                  <UserButton
-                    showName
-                    appearance={{
-                      elements: {
-                        avatarBox: "w-10 h-10 border-2 border-lime-400",
-                      },
-                    }}
-                  />
-                </Button>
+                <UserDropDown />
               ) : (
                 <>
                   <SignInButton mode="modal">

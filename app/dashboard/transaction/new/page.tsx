@@ -1,11 +1,12 @@
+import TransactionForm from "@/components/manual/TransactionForm";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import React from "react";
 
@@ -42,6 +43,17 @@ function Page() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+      <Card className="mt-4 max-w-md">
+        <CardHeader>
+          <CardTitle>ایجاد تراکنش جدید</CardTitle>
+        </CardHeader>
+        <CardContent>
+          فرم ایجاد تراکنش جدید
+          <div className="mt-2">
+            <TransactionForm />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
