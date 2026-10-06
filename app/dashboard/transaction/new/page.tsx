@@ -1,4 +1,5 @@
 import TransactionForm from "@/components/manual/TransactionForm";
+import TransactionFormCreate from "@/components/manual/TransactionFormCreate";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,15 +8,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCategories } from "@/queries/getCategories";
 import Link from "next/link";
-import React from "react";
 
-function Page() {
+async function Page() {
+  const categories = await getCategories();
+
   return (
     <div className="mt-20 max-w-7xl py-10 mx-auto px-4" dir="rtl">
       <Breadcrumb>
         <BreadcrumbList>
-          {/* استفاده مستقیم از Link داخل BreadcrumbItem */}
           <BreadcrumbItem>
             <Link
               href="/dashboard"
@@ -50,7 +52,7 @@ function Page() {
         <CardContent>
           فرم ایجاد تراکنش جدید
           <div className="mt-2">
-            <TransactionForm />
+            <TransactionFormCreate categories={categories} />
           </div>
         </CardContent>
       </Card>

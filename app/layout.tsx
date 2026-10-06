@@ -3,15 +3,11 @@ import "./globals.css";
 import { Vazirmatn } from "next/font/google";
 import Link from "next/link";
 import { ChartColumnBigIcon } from "lucide-react";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import UserDropDown from "@/components/manual/UserDropDown";
+import { Toaster } from "@/components/ui/toast";
 
 const vazir = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -147,7 +143,10 @@ export default async function RootLayout({
             </div>
           </nav>
 
-          <main className="h-200">{children}</main>
+          <main className="h-200">
+            {children}
+            <Toaster />
+          </main>
         </body>
       </html>
     </ClerkProvider>

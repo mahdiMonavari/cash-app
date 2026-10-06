@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import { TransactionFormType } from "./TransactionForm";
 import { Calendar1Icon } from "lucide-react";
+import "@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css";
+import "@majidh1/jalalidatepicker";
 
 declare global {
   interface Window {

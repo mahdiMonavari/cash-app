@@ -15,6 +15,8 @@ export const categoriesTabel = pgTable("categories", {
   }).notNull(),
 });
 
+export type CategorySelect = typeof categoriesTabel.$inferSelect;
+
 export const transactionsTabel = pgTable("transaction", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),

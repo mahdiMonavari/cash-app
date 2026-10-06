@@ -19,11 +19,14 @@ import {
   SelectValue,
 } from "../ui/select";
 import { FieldSet } from "../ui/field";
-import "@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css";
-import "@majidh1/jalalidatepicker";
-import DatePickerField from "./DatePicker";
+const DatePickerField = dynamic(
+  () => import("@/components/manual/DatePicker"),
+  { ssr: false },
+);
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { CategorySelect } from "@/db/schema";
+import dynamic from "next/dynamic";
 
 const transactionTypeEnum = {
   income: "درآمد",
@@ -92,39 +95,46 @@ export type TransactionFormSubmitType = Omit<
   categoryId: number;
 };
 
-function TransactionForm() {
+function TransactionForm({
+  categories,
+  onSubmit,
+}: {
+  categories: CategorySelect[];
+  onSubmit: (data: TransactionFormType) => Promise<void>;
+}) {
   const method = useForm<TransactionFormType>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       amount: "0",
-      categoryId: "0",
+      categoryId: "",
       description: "",
       transaction: "income",
       transactionDate: null,
     },
   });
 
-  const { control, handleSubmit, watch } = method;
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isSubmitting },
+  } = method;
 
-  const submitHandler = (data: TransactionFormType) => {
-    // تبدیل اینجا انجام می‌شه
-    const payload: TransactionFormSubmitType = {
-      ...data,
-      amount: Number(data.amount),
-      categoryId: Number(data.categoryId),
-    };
-    console.log(payload);
-  };
-
-  console.log(watch());
-
+  const speshies = watch("transaction");
+  const categoriesFilterd = categories.filter(
+    (category) => category.type === speshies,
+  );
   return (
     <Form {...method}>
       <form
-        onSubmit={handleSubmit(submitHandler)}
+        onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-md mx-auto p-4"
       >
-        <FieldSet className="grid grid-cols-2 gap-y-5 gap-x-2">
+        <FieldSet
+          disabled={isSubmitting}
+          className="grid grid-cols-2 gap-y-5 gap-x-2"
+        >
           <FormField
             control={control}
             name="transaction"
@@ -134,7 +144,13 @@ function TransactionForm() {
                   نوع تراکنش
                 </FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={(newValue) => {
+                      field.onChange(newValue);
+                      setValue("categoryId", "0 ");
+                    }}
+                    value={field.value}
+                  >
                     <SelectTrigger
                       className="w-full h-11 px-4 text-sm font-medium rounded-xl
                        border-border bg-background shadow-xs hover:bg-accent/40 focus:ring-2
@@ -181,14 +197,26 @@ function TransactionForm() {
                        border-border bg-background shadow-xs hover:bg-accent/40 focus:ring-2
                         focus:ring-ring/20 transition-all"
                     >
-                      <SelectValue placeholder="انتخاب کنید" />
+                      <SelectValue placeholder="انتخاب کنید">
+                        {categoriesFilterd.find(
+                          (c) => String(c.id) === field.value,
+                        )?.name ?? "انتخاب کنید"}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent
                       side="bottom"
                       sideOffset={4}
                       className="rounded-xl shadow-lg border-border"
                     >
-                      {/* آیتم‌های دسته‌بندی را اینجا map کنید */}
+                      {categoriesFilterd.map((category) => (
+                        <SelectItem
+                          key={category.id}
+                          value={category.id.toString()}
+                          className="cursor-pointer py-2.5 rounded-lg focus:bg-accent font-medium text-sm"
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -230,7 +258,7 @@ function TransactionForm() {
           />
         </FieldSet>
 
-        <fieldset>
+        <fieldset disabled={isSubmitting}>
           <FormField
             control={control}
             name="description"
